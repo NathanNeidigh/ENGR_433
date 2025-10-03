@@ -1,0 +1,22 @@
+module blink (
+    input  CLK,
+    output LED_R
+);
+
+  localparam HALF_PERIOD = 500_000;
+
+  reg [18:0] count = 19'd0;
+  reg r_LED_R = 1'b0;
+
+  always @(posedge CLK) begin
+    if (count == HALF_PERIOD - 1) begin
+      r_LED_R <= ~r_LED_R;
+      count   <= 0;
+    end else begin
+      count <= count + 1;
+    end
+  end
+
+  assign LED_R = r_LED_R;
+
+endmodule
