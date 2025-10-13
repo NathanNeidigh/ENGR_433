@@ -1,4 +1,5 @@
 TOP = color_mixer
+TEST = tb.v
 
 SRC = $(TOP).v
 PCF = $(TOP).pcf
@@ -10,6 +11,8 @@ BIN = bin/bitstream.bin
 DEVICE = up5k
 PACKAGE = sg48
 PNR_SEED =
+
+INCLUDE = -I/home/neidna/ENGR_433/99-common
 
 RAM = true
 
@@ -23,8 +26,12 @@ flash: $(BIN)
 		sudo ~/.local/bin/mpremote connect /dev/ttyACM0 run flash.py; \
 	fi
 
+test: $(TEST)
+	iverilog $(INCLUDE) -DSIMULATION $(TEST) -o bin/test
+	./bin/test
+
 $(JSON): $(SRC)
-	yosys -q -p 'read_verilog $(SRC); synth_ice40 -top $(TOP) -json $(JSON)'
+	yosys -q -p 'read_verilog $(INCLUDE) $(SRC); synth_ice40 -top $(TOP) -json $(JSON)'
 
 $(ASC): $(JSON) $(PCF)
 	nextpnr-ice40 -q --$(DEVICE) \
@@ -40,3 +47,4 @@ $(BIN): $(ASC)
 clean:
 	-@rm -f bin/*
 	-@rm -f /run/media/$$USER/5221-0000/bitstream.bin
+	-@rm -f dump.vcd
