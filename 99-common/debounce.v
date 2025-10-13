@@ -10,9 +10,9 @@ module debounce #(
 
   always @(posedge CLK) begin
     if (bouncy_i != debounced && count < DEBOUNCE_LIMIT - 1) begin
-      debounced <= ~debounced;
       count <= count + 1;
     end else begin
+      debounced <= bouncy_i;
       count <= 0;
     end
   end
