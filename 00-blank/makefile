@@ -1,4 +1,4 @@
-TOP = blink
+TOP = blank
 
 SRC = $(TOP).v
 PCF = $(TOP).pcf
@@ -30,9 +30,8 @@ $(ASC): $(JSON) $(PCF)
 	nextpnr-ice40 -q --$(DEVICE) \
 		$(if $(PACKAGE), --package $(PACKAGE)) \
 		--json $(JSON) \
-		--pcf $(PCF) \
 		--asc $@ \
-		$(if $(PNR_SEED), --seed $(PNR_SEED))
+		--top blank
 
 $(BIN): $(ASC)
 	icepack $< $@
