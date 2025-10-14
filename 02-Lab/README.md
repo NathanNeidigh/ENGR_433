@@ -1,0 +1,2 @@
+#Design and Overview
+This lab focused on programming a color mixer that when the button was pressed would cycle through a list of colors. I have accomplished this goal in the accomponing files. The main code is in color_mixer.v while suplmentary code is in debounce.v and the testbench is found in tb.v. Sythesis and PNR is found in my makefile. I also confirmed that the simulation and logic analyzer both work.

@@ -7,14 +7,14 @@ module color_mixer (
     output LED_G,
     output LED_B
 );
-  localparam IDLE_S = 3'b000;
-  localparam RED_S = 3'b001;
-  localparam GREEN_S = 3'b010;
-  localparam BLUE_S = 3'b011;
-  localparam YELLOW_S = 3'b100;
-  localparam CYAN_S = 3'b101;
-  localparam MAGENTA_S = 3'b110;
-  localparam WHITE_S = 3'b111;
+  localparam IDLE_S = 3'b000,
+  RED_S = 3'b001,
+  GREEN_S = 3'b010,
+  BLUE_S = 3'b011,
+  YELLOW_S = 3'b100,
+  CYAN_S = 3'b101,
+  MAGENTA_S = 3'b110,
+  WHITE_S = 3'b111;
 
   localparam IDLE = 3'b000;
   localparam RED = 3'b100;
@@ -31,6 +31,9 @@ module color_mixer (
 
   always @(posedge switch) begin
     state <= state + 1;
+  end
+
+  always @(state) begin
     case (state)
       IDLE_S: led_r <= IDLE;
       RED_S: led_r <= RED;

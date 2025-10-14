@@ -1,1 +1,3 @@
+logic_analyzer/*
 firmware/*
+*.uf2
