@@ -6,12 +6,12 @@
 module color_mixer #(
     parameter integer num_states = 8
 ) (
-    input  clk,
-    input  switch_i,
-    output rLed_i,
-    output gLed_i,
-    output bLed_i,
-    output state
+    input clk,
+    input sw2,
+    output rLed,
+    output gLed,
+    output bLed,
+    output logic [2:0] state_o
 );
 
   localparam IDLE_S = 3'b000,
@@ -32,12 +32,12 @@ module color_mixer #(
   localparam MAGENTA = 3'b101;
   localparam WHITE = 3'b111;
 
-  reg [2:0] state = IDLE_S;
+  reg [2:0] state = num_states - 1; //on startup a false positive for switching occurs, so we initialize to the last state to counteract this.
   reg [2:0] led_r = 3'b000;
   wire switch;
 
   always @(posedge switch) begin
-    if (state == num_states) state <= 1'b0;
+    if (state == num_states - 1) state <= IDLE_S;
     else state <= state + 1;
   end
 
@@ -55,16 +55,17 @@ module color_mixer #(
     endcase
   end
 
-  assign rLed_i = ~led_r[2];
-  assign gLed_i = ~led_r[1];
-  assign bLed_i = ~led_r[0];
+  assign rLed = ~led_r[2];
+  assign gLed = ~led_r[1];
+  assign bLed = ~led_r[0];
+  assign state_o = state;
 
 `ifdef SIMULATION
-  assign switch = switch_i;
+  assign switch = sw2;
 `else
   debounce #() debounce_inst (
-      .CLK(clk),
-      .bouncy_i(switch_i),
+      .clk(clk),
+      .bouncy_i(sw2),
       .debounced(switch)
   );
 `endif
