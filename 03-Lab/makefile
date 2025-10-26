@@ -20,6 +20,7 @@ all: $(BIN)
 
 flash: $(BIN)
 	cp -u $(BIN) /run/media/$$USER/5221-0000/bitstream.bin || (sleep 2 && cp -u $(BIN) /run/media/$$USER/5221-0000/bitstream.bin)
+	sleep 1
 	if [ "$(RAM)" = "true" ]; then \
 		sudo ~/.local/bin/mpremote connect /dev/ttyACM0 run flash_RAM.py; \
 	else \

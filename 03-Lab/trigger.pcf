@@ -1,0 +1,7 @@
+set_io clk 35
+set_io sw2 10
+
+# LED pins
+set_io rLed 41
+set_io gLed 39
+set_io bLed 40
