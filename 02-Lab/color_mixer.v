@@ -56,7 +56,7 @@ module color_mixer (
 `else
   debounce #() debounce_inst (
       .CLK(CLK),
-      .bouncy_i(SW2),
+      .bouncy(SW2),
       .debounced(switch)
   );
 `endif

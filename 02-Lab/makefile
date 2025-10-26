@@ -48,3 +48,6 @@ clean:
 	-@rm -f bin/*
 	-@rm -f /run/media/$$USER/5221-0000/bitstream.bin
 	-@rm -f dump.vcd
+
+jeff:
+	echo $(RAM)
