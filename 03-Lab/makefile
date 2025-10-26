@@ -1,6 +1,7 @@
-TOP = blank
+TOP = trigger
+TEST = tb.sv
 
-SRC = $(TOP).v
+SRC = $(TOP).sv
 PCF = $(TOP).pcf
 
 JSON = bin/$(TOP).json
@@ -11,11 +12,13 @@ DEVICE = up5k
 PACKAGE = sg48
 PNR_SEED =
 
+INCLUDE = -I /home/neidna/ENGR_433/99-common
+
 RAM = true
 
 all: $(BIN)
 
-flash: all
+flash: $(BIN)
 	cp -u $(BIN) /run/media/$$USER/5221-0000/bitstream.bin || (sleep 2 && cp -u $(BIN) /run/media/$$USER/5221-0000/bitstream.bin)
 	if [ "$(RAM)" = "true" ]; then \
 		sudo ~/.local/bin/mpremote connect /dev/ttyACM0 run flash_RAM.py; \
@@ -23,19 +26,25 @@ flash: all
 		sudo ~/.local/bin/mpremote connect /dev/ttyACM0 run flash.py; \
 	fi
 
+test: $(TEST)
+	iverilog $(INCLUDE) -DSIMULATION $(TEST) -o bin/test
+	./bin/test
+
 $(JSON): $(SRC)
-	yosys -q -p 'read_verilog $<; synth_ice40 -top $(TOP) -json $@'
+	yosys -q -p 'read -sv $(INCLUDE) $(SRC) ; synth_ice40 -top $(TOP) -json $(JSON)'
 
 $(ASC): $(JSON) $(PCF)
 	nextpnr-ice40 -q --$(DEVICE) \
 		$(if $(PACKAGE), --package $(PACKAGE)) \
 		--json $(JSON) \
-		--asc $@ \
-		--top blank
+		--pcf $(PCF) \
+		--asc $(ASC) \
+		$(if $(PNR_SEED), --seed $(PNR_SEED))
 
 $(BIN): $(ASC)
-	icepack $< $@
+	icepack $(ASC) $(BIN)
 
 clean:
 	-@rm -f bin/*
 	-@rm -f /run/media/$$USER/5221-0000/bitstream.bin
+	-@rm -f dump.vcd
