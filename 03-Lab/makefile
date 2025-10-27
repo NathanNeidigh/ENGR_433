@@ -12,7 +12,8 @@ DEVICE = up5k
 PACKAGE = sg48
 PNR_SEED =
 
-INCLUDE = -I /home/neidna/ENGR_433/99-common
+INCLUDE_PATH = /home/neidna/ENGR_433/99-common/
+OBJECTS = $(INCLUDE_PATH)debounce.v $(INCLUDE_PATH)color_mixer.v
 
 RAM = true
 
@@ -28,11 +29,11 @@ flash: $(BIN)
 	fi
 
 test: $(TEST)
-	iverilog $(INCLUDE) -DSIMULATION $(TEST) -o bin/test
+	iverilog -g2012 $(SRC) $(OBJECTS) $(TEST) -DSIMULATION -o bin/test
 	./bin/test
 
 $(JSON): $(SRC)
-	yosys -q -p 'read -sv $(INCLUDE) $(SRC) ; synth_ice40 -top $(TOP) -json $(JSON)'
+	yosys -q -p 'read_systemverilog $(OBJECTS) $(SRC) ; synth_ice40 -top $(TOP) -json $(JSON)'
 
 $(ASC): $(JSON) $(PCF)
 	nextpnr-ice40 -q --$(DEVICE) \
