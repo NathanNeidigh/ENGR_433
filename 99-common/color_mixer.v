@@ -1,8 +1,3 @@
-`ifndef DEBOUNCE_V
-`define DEBOUNCE_V
-`include "debounce.v"
-`endif
-
 module color_mixer #(
     parameter integer num_states = 8
 ) (
